@@ -1,0 +1,6 @@
+apiVersion: benny.devops.gov.bc.ca/v1
+kind: RHELEntitlementTracker
+metadata:
+  name: rhelentitlementtracker-sample
+spec:
+  # TODO(user): Add fields here

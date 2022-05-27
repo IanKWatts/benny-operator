@@ -1,0 +1,11 @@
+FROM registry.redhat.io/openshift4/ose-ansible-operator:v4.10
+
+COPY requirements.yml ${HOME}/requirements.yml
+RUN ansible-galaxy collection install -r ${HOME}/requirements.yml \
+ && chmod -R ug+rwx ${HOME}/.ansible
+RUN pip3 install jmespath
+RUN yum -y install jq
+
+COPY watches.yaml ${HOME}/watches.yaml
+COPY roles/ ${HOME}/roles/
+COPY playbooks/ ${HOME}/playbooks/

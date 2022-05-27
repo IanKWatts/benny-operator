@@ -1,0 +1,24 @@
+# permissions for end users to edit rhelentitlementtrackers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rhelentitlementtracker-editor-role
+rules:
+- apiGroups:
+  - benny.devops.gov.bc.ca
+  resources:
+  - rhelentitlementtrackers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - benny.devops.gov.bc.ca
+  resources:
+  - rhelentitlementtrackers/status
+  verbs:
+  - get

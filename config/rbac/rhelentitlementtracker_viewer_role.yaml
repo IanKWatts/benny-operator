@@ -1,0 +1,20 @@
+# permissions for end users to view rhelentitlementtrackers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rhelentitlementtracker-viewer-role
+rules:
+- apiGroups:
+  - benny.devops.gov.bc.ca
+  resources:
+  - rhelentitlementtrackers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - benny.devops.gov.bc.ca
+  resources:
+  - rhelentitlementtrackers/status
+  verbs:
+  - get

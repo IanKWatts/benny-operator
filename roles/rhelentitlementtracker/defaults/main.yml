@@ -1,0 +1,6 @@
+---
+# defaults file for StubSecret
+entitlements_source_namespace: bcgov-entitlements
+entitlements_source_tracker: test1
+entitlements_source_secret: etc-pki-entitlement
+entitlements_target_secret_name: platform-services-controlled-etc-pki-entitlement

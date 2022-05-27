@@ -1,0 +1,43 @@
+---
+# tasks file for StubSecret
+- name: Get cert info
+  shell: "oc -n {{ entitlements_source_namespace }} get rhelentitlementtracker {{ entitlements_source_tracker }} -o json"
+  register: entitlement_info
+
+- name: Set entitlement var
+  set_fact:
+    cert_id: "{{ entitlement_info.stdout | from_json | json_query('spec.cert_id') }}"
+
+- name: Set names for Secret keys
+  set_fact:
+    entitlement_keypemname: "{{ cert_id }}-key.pem"
+    entitlement_certpemname: "{{ cert_id }}.pem"
+
+- name: Set query for json_query
+  set_fact:
+    key_query: "data.\"{{ entitlement_keypemname }}\""
+    cert_query: "data.\"{{ entitlement_certpemname }}\""
+
+- name: Get certs from Secret
+  shell: "oc -n {{ entitlements_source_namespace }} get secret {{ entitlements_source_secret }} -o json"
+  register: cert_info
+
+- name: Set cert vars
+  set_fact:
+    entitlement_key: "{{ cert_info.stdout | from_json | json_query(key_query) }}"
+    entitlement_cert: "{{ cert_info.stdout | from_json | json_query(cert_query) }}"
+
+- name: Get project list
+  shell: "oc get projects | awk '{ print $1 }' | egrep project"
+  register: project_list
+
+- name: Secret is set
+  kubernetes.core.k8s:
+    state: present
+    api_version: v1
+    apply: yes
+    definition: "{{ lookup('template', 'EntitlementSecret.yaml.j2') }}"
+  loop: "{{ project_list.stdout_lines }}"
+  loop_control:
+    loop_var: namespace
+
