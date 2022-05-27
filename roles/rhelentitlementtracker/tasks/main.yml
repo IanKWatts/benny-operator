@@ -1,12 +1,19 @@
 ---
-# tasks file for StubSecret
+# tasks file for RHELEntitlementTracker
 - name: Get cert info
-  shell: "oc -n {{ entitlements_source_namespace }} get rhelentitlementtracker {{ entitlements_source_tracker }} -o json"
+  shell: "oc -n {{ benny_source_namespace }} get rhelentitlementtracker {{ benny_source_tracker }} -o json"
   register: entitlement_info
 
 - name: Set entitlement var
   set_fact:
     cert_id: "{{ entitlement_info.stdout | from_json | json_query('spec.cert_id') }}"
+
+# The cron job creates the initial Secret and CustomResource; they don't exist
+# yet when the operator is first deployed.  Wait for them to be created before
+# attempting any actions.
+- name: Discontinue if tracker resource is not set yet; gets set by cron job
+  meta: end_play
+  when: cert_id = "NOT_SET_YET"
 
 - name: Set names for Secret keys
   set_fact:
@@ -19,7 +26,7 @@
     cert_query: "data.\"{{ entitlement_certpemname }}\""
 
 - name: Get certs from Secret
-  shell: "oc -n {{ entitlements_source_namespace }} get secret {{ entitlements_source_secret }} -o json"
+  shell: "oc -n {{ benny_source_namespace }} get secret {{ benny_source_secret }} -o json"
   register: cert_info
 
 - name: Set cert vars

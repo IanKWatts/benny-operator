@@ -1,6 +1,7 @@
 ---
-# defaults file for StubSecret
-entitlements_source_namespace: bcgov-entitlements
-entitlements_source_tracker: test1
-entitlements_source_secret: etc-pki-entitlement
-entitlements_target_secret_name: platform-services-controlled-etc-pki-entitlement
+# defaults file for RHELEntitlementTracker
+entitlements_source_namespace: "{{ lookup('env', 'SOURCE_NAMESPACE') }}"
+entitlements_source_tracker: "{{ lookup('env', 'SOURCE_TRACKER') }}"
+entitlements_source_secret: "{{ lookup('env', 'SOURCE_SECRET') }}"
+entitlements_target_secret_name: "{{ lookup('env', 'TARGET_SECRET') }}"
+
