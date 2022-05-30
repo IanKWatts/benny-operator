@@ -13,7 +13,7 @@
 # attempting any actions.
 - name: Discontinue if tracker resource is not set yet; gets set by cron job
   meta: end_play
-  when: cert_id = "NOT_SET_YET"
+  when: cert_id == "NOT_SET_YET"
 
 - name: Set names for Secret keys
   set_fact:
