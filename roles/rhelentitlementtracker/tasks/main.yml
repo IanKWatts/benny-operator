@@ -1,7 +1,7 @@
 ---
 # tasks file for RHELEntitlementTracker
 - name: Get cert info
-  shell: "${HOME}/oc -n {{ benny_source_namespace }} get rhelentitlementtracker {{ benny_source_tracker }} -o json"
+  shell: "/opt/ansible/oc -n {{ benny_source_namespace }} get rhelentitlementtracker {{ benny_source_tracker }} -o json"
   register: entitlement_info
 
 - name: Set entitlement var
@@ -26,7 +26,7 @@
     cert_query: "data.\"{{ entitlement_certpemname }}\""
 
 - name: Get certs from Secret
-  shell: "${HOME}/oc -n {{ benny_source_namespace }} get secret {{ benny_source_secret }} -o json"
+  shell: "/opt/ansible/oc -n {{ benny_source_namespace }} get secret {{ benny_source_secret }} -o json"
   register: cert_info
 
 - name: Set cert vars
@@ -35,7 +35,7 @@
     entitlement_cert: "{{ cert_info.stdout | from_json | json_query(cert_query) }}"
 
 - name: Get project list
-  shell: "${HOME}/oc get projects | awk '{ print $1 }' | egrep project"
+  shell: "/opt/ansible/oc get projects | awk '{ print $1 }' | egrep project"
   register: project_list
 
 - name: Secret is set
