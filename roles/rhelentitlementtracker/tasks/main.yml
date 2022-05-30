@@ -34,8 +34,8 @@
     entitlement_key: "{{ cert_info.stdout | from_json | json_query(key_query) }}"
     entitlement_cert: "{{ cert_info.stdout | from_json | json_query(cert_query) }}"
 
-- name: Get project list
-  shell: "/opt/ansible/oc get projects | awk '{ print $1 }' | egrep project"
+- name: Get list of tools namespaces
+  shell: "/opt/ansible/oc get projects | awk '{ print $1 }' | egrep '\-tools$'"
   register: project_list
 
 - name: Secret is set
