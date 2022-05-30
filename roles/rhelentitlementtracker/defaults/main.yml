@@ -1,7 +1,7 @@
 ---
 # defaults file for RHELEntitlementTracker
-entitlements_source_namespace: "{{ lookup('env', 'SOURCE_NAMESPACE') }}"
-entitlements_source_tracker: "{{ lookup('env', 'SOURCE_TRACKER') }}"
-entitlements_source_secret: "{{ lookup('env', 'SOURCE_SECRET') }}"
-entitlements_target_secret_name: "{{ lookup('env', 'TARGET_SECRET') }}"
+benny_source_namespace: "{{ lookup('env', 'SOURCE_NAMESPACE') }}"
+benny_source_tracker: "{{ lookup('env', 'SOURCE_TRACKER') }}"
+benny_source_secret: "{{ lookup('env', 'SOURCE_SECRET') }}"
+benny_target_secret_name: "{{ lookup('env', 'TARGET_SECRET') }}"
 
