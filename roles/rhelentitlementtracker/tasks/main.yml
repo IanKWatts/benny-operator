@@ -1,5 +1,9 @@
 ---
 # tasks file for RHELEntitlementTracker
+- name: Debug - Get cert info
+  debug:
+    msg: "/opt/ansible/oc -n {{ benny_source_namespace }} get rhelentitlementtracker {{ benny_source_tracker }} -o json"
+
 - name: Get cert info
   shell: "/opt/ansible/oc -n {{ benny_source_namespace }} get rhelentitlementtracker {{ benny_source_tracker }} -o json"
   register: entitlement_info
@@ -7,6 +11,10 @@
 - name: Set entitlement var
   set_fact:
     cert_id: "{{ entitlement_info.stdout | from_json | json_query('spec.cert_id') }}"
+
+- name: Debug - Set entitlement var
+  debug:
+    msg: "cert_id: {{ cert_id }}"
 
 # The cron job creates the initial Secret and CustomResource; they don't exist
 # yet when the operator is first deployed.  Wait for them to be created before
@@ -20,22 +28,46 @@
     entitlement_keypemname: "{{ cert_id }}-key.pem"
     entitlement_certpemname: "{{ cert_id }}.pem"
 
+- name: Debug - entitlement_keypemname
+  debug:
+    msg: "entitlement_keypemname: {{ cert_id }}-key.pem"
+
+- name: Debug - entitlement_certpemname
+  debug:
+    msg: "entitlement_certpemname: {{ cert_id }}.pem"
+
 - name: Set query for json_query
   set_fact:
     key_query: "data.\"{{ entitlement_keypemname }}\""
     cert_query: "data.\"{{ entitlement_certpemname }}\""
 
+- name: Debug - json_query
+  debug:
+    msg: "key_query: {{ key_query }}"
+
+- name: Debug - Get certs from Secret
+  debug:
+    msg: "/opt/ansible/oc -n {{ benny_source_namespace }} get secret {{ benny_source_secret }} -o json"
+
 - name: Get certs from Secret
   shell: "/opt/ansible/oc -n {{ benny_source_namespace }} get secret {{ benny_source_secret }} -o json"
   register: cert_info
+
+- name: Debug - Set cert vars
+  debug:
+    msg: "entitlement_key: {{ entitlement_key }}"
 
 - name: Set cert vars
   set_fact:
     entitlement_key: "{{ cert_info.stdout | from_json | json_query(key_query) }}"
     entitlement_cert: "{{ cert_info.stdout | from_json | json_query(cert_query) }}"
 
+- name: Debug - Get list of tools namespaces"
+  debug:
+    msg: "/opt/ansible/oc get projects --all-namespaces | awk '{ print $1 }' | egrep tools$"
+
 - name: Get list of tools namespaces
-  shell: "/opt/ansible/oc get projects | awk '{ print $1 }' | egrep tools$"
+  shell: "/opt/ansible/oc get projects --all-namespaces | awk '{ print $1 }' | egrep tools$"
   register: project_list
 
 - name: Secret is set
