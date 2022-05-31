@@ -53,14 +53,14 @@
   shell: "/opt/ansible/oc -n {{ benny_source_namespace }} get secret {{ benny_source_secret }} -o json"
   register: cert_info
 
-- name: Debug - Set cert vars
-  debug:
-    msg: "entitlement_key: {{ entitlement_key }}"
-
 - name: Set cert vars
   set_fact:
     entitlement_key: "{{ cert_info.stdout | from_json | json_query(key_query) }}"
     entitlement_cert: "{{ cert_info.stdout | from_json | json_query(cert_query) }}"
+
+- name: Debug - Set cert vars
+  debug:
+    msg: "entitlement_key: {{ entitlement_key }}"
 
 - name: Debug - Get list of tools namespaces"
   debug:
